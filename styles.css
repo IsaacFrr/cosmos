@@ -346,6 +346,52 @@ kbd     {
   letter-spacing: 0.05em;
 }
 
+/* Language toggle */
+.lang-toggle {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 2px;
+  margin-right: 12px;
+}
+.lang-toggle__opt {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-mute);
+  transition: color .2s;
+  user-select: none;
+}
+.lang-toggle__opt.is-active {
+  color: var(--accent);
+}
+.lang-toggle__track {
+  position: relative;
+  width: 28px;
+  height: 14px;
+  background: rgba(79, 195, 247, 0.15);
+  border: 1px solid var(--line-bright);
+  border-radius: 7px;
+  transition: background .2s;
+}
+.lang-toggle__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  transition: transform .2s var(--ease-out);
+}
+.lang-toggle[aria-pressed="true"] .lang-toggle__thumb {
+  transform: translateX(14px);
+}
+
 @media (max-width: 719px) {
   .topnav__right { display: none; }
 }

@@ -36,6 +36,7 @@
     speed: 1.0,
     time: 0,
     selectedPlanet: null,
+    lang: "es",
     cameraMode: "overview",  // "overview" | "planet"
     orbit: { theta: 0.5, phi: 1.0, radius: 130 },
     target: new THREE.Vector3(0, 0, 0),
@@ -854,7 +855,8 @@
 
     /* Update top nav */
     const pn = $("#current-planet-name");
-    if (pn) pn.textContent = pd.name.toUpperCase();
+    const t  = (pd.i18n && pd.i18n[state.lang]) || {};
+    if (pn) pn.textContent = (t.name || pd.name).toUpperCase();
 
     /* Fill info panel */
     const kicker   = $("#panel-kicker");
@@ -869,9 +871,9 @@
     const statMass = $("#stat-mass");
 
     if (kicker)   kicker.textContent   = "Planeta " + (index + 1) + " de 8";
-    if (name)     name.textContent     = pd.name;
-    if (tagline)  tagline.textContent  = pd.tagline;
-    if (desc)     desc.textContent     = pd.desc;
+    if (name)     name.textContent     = t.name    || pd.name;
+    if (tagline)  tagline.textContent  = t.tagline || pd.tagline || "";
+    if (desc)     desc.textContent     = t.desc    || pd.desc    || "";
     if (statR && pd.facts)    statR.textContent    = pd.facts.radius;
     if (statD && pd.facts)    statD.textContent    = pd.facts.distance;
     if (statP && pd.facts)    statP.textContent    = pd.facts.period;
@@ -958,6 +960,18 @@
       });
     });
 
+    /* Language toggle */
+    const langBtn = $("#lang-toggle");
+    if (langBtn) {
+      langBtn.addEventListener("click", () => {
+        setLanguage(state.lang === "es" ? "en" : "es");
+      });
+      /* Mark initial active option */
+      $$(".lang-toggle__opt", langBtn).forEach(opt => {
+        opt.classList.toggle("is-active", opt.dataset.lang === state.lang);
+      });
+    }
+
     /* Keyboard shortcuts */
     window.addEventListener("keydown", (e) => {
       const key = e.key.toLowerCase();
@@ -972,6 +986,38 @@
       const n = parseInt(e.key, 10);
       if (n >= 1 && n <= 8) selectPlanet(n - 1);
     });
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     Language switching
+  ───────────────────────────────────────────────────────────── */
+  function setLanguage(lang) {
+    state.lang = lang;
+    const isEN = lang === "en";
+
+    /* Toggle button state */
+    const langBtn = $("#lang-toggle");
+    if (langBtn) {
+      langBtn.setAttribute("aria-pressed", String(isEN));
+      $$(".lang-toggle__opt", langBtn).forEach(opt => {
+        opt.classList.toggle("is-active", opt.dataset.lang === lang);
+      });
+    }
+
+    /* Sidebar planet names */
+    $$(".sidebar__item[data-planet-nav]").forEach(item => {
+      const idx = parseInt(item.dataset.planetNav, 10);
+      const pd  = DATA[idx];
+      if (!pd) return;
+      const t = (pd.i18n && pd.i18n[lang]) || {};
+      const nameEl = item.querySelector(".sidebar__name");
+      if (nameEl) nameEl.textContent = t.name || pd.name;
+    });
+
+    /* Refresh open info panel */
+    if (state.selectedPlanet !== null) {
+      selectPlanet(state.selectedPlanet);
+    }
   }
 
   /* ─────────────────────────────────────────────────────────────

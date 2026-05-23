@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap">
 
-  <link rel="stylesheet" href="styles.css?v=20260523">
+  <link rel="stylesheet" href="styles.css?v=20260524">
 </head>
 <body>
 
@@ -69,6 +69,11 @@
       <span class="topnav__planet-name" id="current-planet-name"></span>
     </div>
     <div class="topnav__right">
+      <button class="lang-toggle" id="lang-toggle" aria-label="Cambiar idioma / Switch language" aria-pressed="false">
+        <span class="lang-toggle__opt" data-lang="es">ES</span>
+        <span class="lang-toggle__track" aria-hidden="true"><span class="lang-toggle__thumb"></span></span>
+        <span class="lang-toggle__opt" data-lang="en">EN</span>
+      </button>
       <span class="topnav__hint" aria-label="Atajos de teclado">
         <kbd>P</kbd> pausa &nbsp; <kbd>R</kbd> reset &nbsp; <kbd>1–8</kbd> planetas
       </span>
@@ -246,6 +251,6 @@
   <script defer src="lib/OrbitControls.js"></script>
   <script defer src="lib/gsap.min.js"></script>
   <script defer src="lib/manifest.js"></script>
-  <script defer src="main.js?v=20260523"></script>
+  <script defer src="main.js?v=20260524"></script>
 </body>
 </html>
