@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="space">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COSMOS — Sistema Solar Interactivo</title>
+  <meta name="description" content="Explora el sistema solar en 3D. Haz clic en cualquier planeta para acercarte y descubrir sus datos astronómicos reales.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap">
+
+  <link rel="stylesheet" href="styles.css?v=20260523">
+</head>
+<body>
+
+  <!-- Skip link -->
+  <a class="skip-link" href="#cosmos-canvas">Ir al explorador</a>
+
+  <!-- ═══════════════════════════════════════════════
+       SPLASH / LOADING
+  ═══════════════════════════════════════════════ -->
+  <div class="splash" data-splash aria-label="Cargando COSMOS" role="status">
+    <div class="splash-inner">
+      <div class="splash-orbit" aria-hidden="true">
+        <div class="splash-orbit__ring splash-orbit__ring--1"></div>
+        <div class="splash-orbit__ring splash-orbit__ring--2"></div>
+        <div class="splash-orbit__ring splash-orbit__ring--3"></div>
+        <div class="splash-orbit__dot"></div>
+      </div>
+      <p class="splash-title" aria-hidden="true">COSMOS</p>
+      <p class="splash-sub">Inicializando sistema solar&hellip;</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       INTRO OVERLAY (cinematic reveal)
+  ═══════════════════════════════════════════════ -->
+  <div class="intro-overlay" data-intro aria-hidden="true">
+    <div class="intro-content">
+      <p class="intro-kicker">Sistema Solar &bull; Explorador 3D</p>
+      <h1 class="intro-title">
+        <span class="intro-title__line">COSMOS</span>
+      </h1>
+      <p class="intro-sub">Haz clic en cualquier planeta para explorar</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       THREE.JS CANVAS
+  ═══════════════════════════════════════════════ -->
+  <canvas id="cosmos-canvas" aria-label="Sistema Solar 3D interactivo"></canvas>
+
+  <!-- WebGL fallback -->
+  <div class="no-webgl" id="no-webgl" hidden>
+    <p>Tu navegador no soporta WebGL. Por favor actualiza Chrome, Firefox o Edge.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       TOP NAV
+  ═══════════════════════════════════════════════ -->
+  <header class="topnav" role="banner">
+    <button class="topnav__logo" data-action="reset" aria-label="Volver a vista general">
+      <span class="topnav__logo-text">COSMOS</span>
+      <span class="topnav__logo-sub">Sistema Solar</span>
+    </button>
+    <div class="topnav__center" aria-live="polite" aria-atomic="true">
+      <span class="topnav__planet-name" id="current-planet-name"></span>
+    </div>
+    <div class="topnav__right">
+      <span class="topnav__hint" aria-label="Atajos de teclado">
+        <kbd>P</kbd> pausa &nbsp; <kbd>R</kbd> reset &nbsp; <kbd>1–8</kbd> planetas
+      </span>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════
+       LEFT SIDEBAR — planet list
+  ═══════════════════════════════════════════════ -->
+  <nav class="sidebar" aria-label="Lista de planetas">
+    <ul class="sidebar__list" role="list">
+      <li class="sidebar__item" data-planet-nav="0">
+        <button class="sidebar__btn" aria-label="Mercury — ir al planeta">
+          <span class="sidebar__dot" style="--planet-color:#9c9c9c"></span>
+          <span class="sidebar__name">Mercury</span>
+        </button>
+      </li>
+      <li class="sidebar__item" data-planet-nav="1">
+        <button class="sidebar__btn" aria-label="Venus — ir al planeta">
+          <span class="sidebar__dot" style="--planet-color:#e8d5a3"></span>
+          <span class="sidebar__name">Venus</span>
+        </button>
+      </li>
+      <li class="sidebar__item" data-planet-nav="2">
+        <button class="sidebar__btn" aria-label="Earth — ir al planeta">
+          <span class="sidebar__dot" style="--planet-color:#3a88c8"></span>
+          <span class="sidebar__name">Earth</span>
+        </button>
+      </li>
+      <li class="sidebar__item" data-planet-nav="3">
+        <button class="sidebar__btn" aria-label="Mars — ir al planeta">
+          <span class="sidebar__dot" style="--planet-color:#cc4422"></span>
+          <span class="sidebar__name">Mars</span>
+        </button>
+      </li>
+      <li class="sidebar__item" data-planet-nav="4">
+        <button class="sidebar__btn" aria-label="Jupiter — ir al planeta">
+          <span class="sidebar__dot" style="--planet-color:#d4a96a"></span>
+          <span class="sidebar__name">Jupiter</span>
+        </button>
+      </li>
+      <li class="sidebar__item" data-planet-nav="5">
+        <button class="sidebar__btn" aria-label="Saturn — ir al planeta">
+          <span class="sidebar__dot" style="--planet-color:#e8d5a3"></span>
+          <span class="sidebar__name">Saturn</span>
+        </button>
+      </li>
+      <li class="sidebar__item" data-planet-nav="6">
+        <button class="sidebar__btn" aria-label="Uranus — ir al planeta">
+          <span class="sidebar__dot" style="--planet-color:#7de8e8"></span>
+          <span class="sidebar__name">Uranus</span>
+        </button>
+      </li>
+      <li class="sidebar__item" data-planet-nav="7">
+        <button class="sidebar__btn" aria-label="Neptune — ir al planeta">
+          <span class="sidebar__dot" style="--planet-color:#3344cc"></span>
+          <span class="sidebar__name">Neptune</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════
+       RIGHT PANEL — planet info
+  ═══════════════════════════════════════════════ -->
+  <aside class="info-panel" id="info-panel" aria-label="Información del planeta" aria-hidden="true">
+    <button class="info-panel__close" data-action="close-panel" aria-label="Cerrar panel">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="info-panel__inner">
+      <p class="info-panel__kicker" id="panel-kicker">Planeta</p>
+      <h2 class="info-panel__name" id="panel-name">—</h2>
+      <p class="info-panel__tagline" id="panel-tagline">—</p>
+
+      <div class="info-panel__divider"></div>
+
+      <dl class="info-stats">
+        <div class="info-stats__item">
+          <dt class="info-stats__label">Radio ecuatorial</dt>
+          <dd class="info-stats__value" id="stat-radius">—</dd>
+        </div>
+        <div class="info-stats__item">
+          <dt class="info-stats__label">Distancia al Sol</dt>
+          <dd class="info-stats__value" id="stat-distance">—</dd>
+        </div>
+        <div class="info-stats__item">
+          <dt class="info-stats__label">Periodo orbital</dt>
+          <dd class="info-stats__value" id="stat-period">—</dd>
+        </div>
+        <div class="info-stats__item">
+          <dt class="info-stats__label">Temperatura media</dt>
+          <dd class="info-stats__value" id="stat-temp">—</dd>
+        </div>
+        <div class="info-stats__item">
+          <dt class="info-stats__label">Lunas conocidas</dt>
+          <dd class="info-stats__value" id="stat-moons">—</dd>
+        </div>
+        <div class="info-stats__item">
+          <dt class="info-stats__label">Masa (Tierra = 1)</dt>
+          <dd class="info-stats__value" id="stat-mass">—</dd>
+        </div>
+      </dl>
+
+      <div class="info-panel__divider"></div>
+
+      <p class="info-panel__desc" id="panel-desc">—</p>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════
+       BOTTOM CONTROL BAR
+  ═══════════════════════════════════════════════ -->
+  <div class="controls" role="toolbar" aria-label="Controles del simulador">
+    <button class="controls__btn controls__btn--pause" id="btn-pause" data-action="pause" aria-label="Pausar simulación" aria-pressed="false">
+      <svg class="icon-pause" width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="4" height="14" rx="1" fill="currentColor"/>
+        <rect x="9" y="1" width="4" height="14" rx="1" fill="currentColor"/>
+      </svg>
+      <svg class="icon-play" width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 1L13 8L1 15V1Z" fill="currentColor"/>
+      </svg>
+      <span class="controls__label">Pausar</span>
+    </button>
+
+    <div class="controls__speed" role="group" aria-label="Velocidad de simulación">
+      <span class="controls__speed-label" aria-hidden="true">Velocidad</span>
+      <input
+        type="range"
+        class="controls__slider"
+        id="speed-slider"
+        min="0"
+        max="100"
+        value="30"
+        aria-label="Velocidad de la simulación"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="30"
+      >
+      <span class="controls__speed-value" id="speed-display" aria-live="polite">1×</span>
+    </div>
+
+    <button class="controls__btn" id="btn-reset" data-action="reset" aria-label="Restablecer vista general">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M2 8C2 4.686 4.686 2 8 2C10.205 2 12.133 3.117 13.24 4.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M14 2L13.24 4.8L10.8 3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14 8C14 11.314 11.314 14 8 14C5.795 14 3.867 12.883 2.76 11.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M2 14L2.76 11.2L5.2 12.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="controls__label">Reset</span>
+    </button>
+
+    <div class="controls__credit" aria-label="Créditos">
+      Powered by Three.js
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       CUSTOM CURSOR
+  ═══════════════════════════════════════════════ -->
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <div class="cursor__reticle">
+      <div class="cursor__reticle-h"></div>
+      <div class="cursor__reticle-v"></div>
+      <div class="cursor__reticle-ring"></div>
+    </div>
+    <div class="cursor__dot"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCRIPTS — order matters
+  ═══════════════════════════════════════════════ -->
+  <script defer src="lib/three.min.js"></script>
+  <script defer src="lib/OrbitControls.js"></script>
+  <script defer src="lib/gsap.min.js"></script>
+  <script defer src="lib/manifest.js"></script>
+  <script defer src="main.js?v=20260523"></script>
+</body>
+</html>
