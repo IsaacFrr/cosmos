@@ -870,7 +870,9 @@
     const statM    = $("#stat-moons");
     const statMass = $("#stat-mass");
 
-    if (kicker)   kicker.textContent   = "Planeta " + (index + 1) + " de 8";
+    if (kicker)   kicker.textContent   = state.lang === "en"
+      ? "Planet " + (index + 1) + " of 8"
+      : "Planeta " + (index + 1) + " de 8";
     if (name)     name.textContent     = t.name    || pd.name;
     if (tagline)  tagline.textContent  = t.tagline || pd.tagline || "";
     if (desc)     desc.textContent     = t.desc    || pd.desc    || "";
@@ -1012,6 +1014,15 @@
       const t = (pd.i18n && pd.i18n[lang]) || {};
       const nameEl = item.querySelector(".sidebar__name");
       if (nameEl) nameEl.textContent = t.name || pd.name;
+    });
+
+    /* Stat labels */
+    const statLabels = {
+      es: ["Radio ecuatorial", "Distancia al Sol", "Periodo orbital", "Temperatura media", "Lunas conocidas", "Masa (Tierra = 1)"],
+      en: ["Equatorial radius", "Distance from Sun", "Orbital period", "Average temperature", "Known moons", "Mass (Earth = 1)"]
+    };
+    $$(".info-stats__label").forEach(function(dt, i) {
+      if (statLabels[lang][i]) dt.textContent = statLabels[lang][i];
     });
 
     /* Refresh open info panel */
